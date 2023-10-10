@@ -7,10 +7,10 @@ Projekt by měl vytvořit aplikaci, která bude zobrazovat informace o pohybu Me
 Hlavní funkce systému
 1 Stažení provozních dat ISS z příslušné webové služby +
 2 Zpracování stažených dat na straně aplikace
-3 Stažená data by měla být uložena do databáze
+3 Stažená data by měla být uložena do databáze +
 4 Technologie
 5 Konzolová aplikace
-6 DBC nebo Hibernate
+6 JDBC nebo Hibernate
 7 Doménová logika rozdělená do vrstev, např. DAO, Service
 8 Nástroje pro testování jednotek
 

@@ -6,9 +6,9 @@ import java.sql.Statement;
 
 public class PrintTable {
     public static void main(String[] args) {
-        String url = "jdbc:mysql://localhost:3306/new_schema";
-        String username = "root";
-        String password = "HPMini100e";
+        String url = "jdbc:mysql://db4free.net:3306/free_sql_iss_dat";
+        String username = "vesmir";
+        String password = "vesmirvesmir";
 
         try (Connection connection = DriverManager.getConnection(url, username, password);
              Statement statement = connection.createStatement()) {
