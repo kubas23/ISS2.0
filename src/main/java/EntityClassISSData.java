@@ -1,5 +1,6 @@
 // class for save data of ISS
-public class ISSData {
+public class EntityClassISSData {
+
     public class IssPosition {
         private String longitude;
         private String latitude;
