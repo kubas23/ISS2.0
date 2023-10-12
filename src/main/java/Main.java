@@ -5,6 +5,7 @@ import java.util.Properties;
 
 public class Main {
     public static void main(String[] args) throws IOException, SQLException {
+
         // loading configuration information from a file "application.properties"
         Properties properties = new Properties();
         FileInputStream input = new FileInputStream("src/main/resources/application.properties");
@@ -13,20 +14,27 @@ public class Main {
         String username = properties.getProperty("db.username");
         String password = properties.getProperty("db.password");
 
-        IssSqlTable.createIfNotExists(url, username, password); // methods of this class: createIfNotExists, insert, delete, print
-        TranslateIssRequestFromJson.translateLocation(); // inside this class is another class - WhereIsNowIssRequest class
-        IssSqlTable.insert(
+        //create instances of classes
+        IssSqlTable instanceOfIssSqlTableClass = new IssSqlTable();
+        TranslateIssRequestFromJson instanceOfTranslateIssRequestFromJsonClass = new TranslateIssRequestFromJson();
+
+        instanceOfIssSqlTableClass.createIfNotExistsLocationTable(url, username, password); //create table if not exists
+        instanceOfTranslateIssRequestFromJsonClass.translateLocation(); //download and translate from json location data
+        instanceOfIssSqlTableClass.insertLocationTable( //insert location data to sql location table
                 url,
                 username,
                 password,
-                TranslateIssRequestFromJson.longitudeLocation,
-                TranslateIssRequestFromJson.latitudeLocation,
-                TranslateIssRequestFromJson.messageLocation,
-                TranslateIssRequestFromJson.timeLocation);
-        IssSqlTable.print(url, username, password);
+                instanceOfTranslateIssRequestFromJsonClass.longitudeLocation,
+                instanceOfTranslateIssRequestFromJsonClass.latitudeLocation,
+                instanceOfTranslateIssRequestFromJsonClass.messageLocation,
+                instanceOfTranslateIssRequestFromJsonClass.timeLocation);
+        instanceOfIssSqlTableClass.printLocationTable(url, username, password); //print sql location table
 
-        System.out.println(IssOpenNotifyApi.howManyHumans());
-        TranslateIssRequestFromJson.translateHumans();
-        System.out.println(TranslateIssRequestFromJson.numbersHumans+" "+TranslateIssRequestFromJson.messageHumans);
+        instanceOfTranslateIssRequestFromJsonClass.translateHumans(); //download and translate from json location data
+        //create (or delete old humans table), insert data\/
+        instanceOfIssSqlTableClass.insertHumansTable(url, username, password, instanceOfTranslateIssRequestFromJsonClass);
+        instanceOfIssSqlTableClass.printHumansTable(url, username, password); //print sql location table
+
+//        IssSqlTable.deleteAllTables(url, username, password); // delete all tables
     }
 }

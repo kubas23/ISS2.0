@@ -1,20 +1,13 @@
-public class EntityClassHowManyHumans {
-    public class People {
-        private String name;
-        private String craft;
+import java.util.ArrayList;
+import java.util.List;
 
-        public String getName() {
-            return name;
-        }
-        public String getCraft() {
-            return craft;
-        }
-    }
+public class EntityClassHowManyHumans {
+
     private String message;
     private int number;
-    private People people;
+    private List<HumanCraft> people = new ArrayList<>();
 
-    public People getPeople() {
+    public List<HumanCraft> getPeople() {
         return people;
     }
 
@@ -24,5 +17,17 @@ public class EntityClassHowManyHumans {
 
     public int getNumber() {
         return number;
+    }
+
+    public static class HumanCraft {
+        private String name;
+        private String craft;
+
+        public String getName() {
+            return name;
+        }
+        public String getCraft() {
+            return craft;
+        }
     }
 }

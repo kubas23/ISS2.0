@@ -7,9 +7,9 @@ import org.apache.http.util.EntityUtils;
 import java.io.IOException;
 
 public class IssOpenNotifyApi {
-    static String issAnswer;
+   String issAnswer;
 
-    static String howManyHumans() throws IOException {
+    String howManyHumans() throws IOException {
         HttpClient httpClient = HttpClients.createDefault();
         HttpGet question = new HttpGet("http://api.open-notify.org/astros.json");
         HttpResponse answer = httpClient.execute(question);
@@ -17,7 +17,7 @@ public class IssOpenNotifyApi {
         return issAnswer;
     }
 
-    static String whereIsNowIssRequest() throws IOException {
+    String whereIsNowIssRequest() throws IOException {
         HttpClient httpClient = HttpClients.createDefault();
         HttpGet question = new HttpGet("http://api.open-notify.org/iss-now.json");
         HttpResponse answer = httpClient.execute(question);

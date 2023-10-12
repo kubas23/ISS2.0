@@ -1,7 +1,7 @@
 import java.sql.*;
 
 public class IssSqlTable {
-    static void createIfNotExists(String url, String username, String password) throws SQLException {
+    void createIfNotExistsLocationTable(String url, String username, String password) throws SQLException {
 
         Connection connection = DriverManager.getConnection(url, username, password);
         Statement statement = connection.createStatement();
@@ -14,36 +14,64 @@ public class IssSqlTable {
         statement.executeUpdate(sqlQuery);
     }
 
-    static void delete(String url, String username, String password) throws SQLException {
+    static void deleteAllTables(String url, String username, String password) throws SQLException {
         Connection connection = DriverManager.getConnection(url, username, password);
         Statement statement = connection.createStatement();
-        String tableName = "ISS_data";
-        String sqlQuery = "DROP TABLE IF EXISTS ISS_data";
-        statement.executeUpdate(sqlQuery);
-        System.out.println("Table " + tableName + " has been deleted");
+        String[] tables = {"ISS_data", "Humans_data"};
+        for (String table : tables) {
+            statement.executeUpdate("DROP TABLE IF EXISTS " + table);
+            System.out.println("Table " + table + " has been deleted");
+        }
     }
 
-    static void print(String url, String username, String password) throws SQLException {
+    void printHumansTable(String url, String username, String password) throws SQLException {
+        Connection connection = DriverManager.getConnection(url, username, password);
+        Statement statement = connection.createStatement();
+        String sqlQuery = "SELECT * FROM Humans_data";
+        ResultSet resultSet = statement.executeQuery(sqlQuery);
+        while ((resultSet.next())){
+            System.out.print("name: "+ resultSet.getString("name"));
+            System.out.println(" || craft: "+ resultSet.getString("craft"));
+        }
+    }
+
+    void printLocationTable(String url, String username, String password) throws SQLException {
         Connection connection = DriverManager.getConnection(url, username, password);
         Statement statement = connection.createStatement();
         String sqlQuery = "SELECT * FROM ISS_data";
         ResultSet resultSet = statement.executeQuery(sqlQuery);
-
         while (resultSet.next()) {
-            String longitude = resultSet.getString("longitude");
-            String latitude = resultSet.getString("latitude");
-            String message = resultSet.getString("message");
-            String time = resultSet.getString("time");
-
-            System.out.println("longitude: " + longitude);
-            System.out.println("latitude: " + latitude);
-            System.out.println("message: " + message);
-            System.out.println("time: " + time);
-            System.out.println("------------------------");
+            System.out.print("longitude: " + resultSet.getString("longitude"));
+            System.out.print("|| latitude: " + resultSet.getString("latitude"));
+            System.out.print("|| message: " + resultSet.getString("message"));
+            System.out.println("|| time: " + resultSet.getString("time"));
+            System.out.println("----------------");
         }
     }
-    static void insert(String url, String username, String password, String longitude, String latitude, String message, String time) throws SQLException {
 
+    void insertHumansTable(String url, String username, String password, TranslateIssRequestFromJson translateIssRequestFromJson) throws SQLException {
+        Connection connection = DriverManager.getConnection(url, username, password);
+        Statement statement = connection.createStatement();
+        statement.executeUpdate("CREATE TABLE IF NOT EXISTS Humans_data (" +
+                "name VARCHAR(255)," +
+                "craft VARCHAR(255)," +
+                "PRIMARY KEY (name, craft)" +
+                ")");
+        statement.executeUpdate("DELETE FROM Humans_data");
+
+        for (int i = 0; i < translateIssRequestFromJson.name.size(); i++) {
+            String name = translateIssRequestFromJson.name.get(i);
+            String craft = translateIssRequestFromJson.craft.get(i);
+
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Humans_data (name, craft) VALUES (?, ?)");
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, craft);
+            preparedStatement.executeUpdate();
+        }
+        connection.close();
+    }
+
+    void insertLocationTable(String url, String username, String password, String longitude, String latitude, String message, String time) throws SQLException {
         Connection connection = DriverManager.getConnection(url, username, password);
         PreparedStatement preparedStatement = connection.prepareStatement(
                 "INSERT INTO ISS_data (longitude, latitude, message, time) VALUES (?, ?, ?, ?)");
@@ -53,7 +81,6 @@ public class IssSqlTable {
         preparedStatement.setString(4, time);
 
         int rowsAffected = preparedStatement.executeUpdate();
-
         if (rowsAffected > 0) {
             System.out.println("data loaded successfully");
         } else {
