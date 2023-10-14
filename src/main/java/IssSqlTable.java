@@ -1,6 +1,25 @@
 import java.sql.*;
 
 public class IssSqlTable {
+    int countOfRecordsLocationTable(String url, String username, String password, String nameOfTable) throws SQLException {
+        int countOfRecords = 0;
+        Connection connection = DriverManager.getConnection(url, username, password);
+        Statement statement = connection.createStatement();
+
+        String columnNameForRequest = null;
+        if (nameOfTable.equals("ISS_data")) {
+            columnNameForRequest = "time";
+        } else {
+            columnNameForRequest = "name";
+        }
+
+        ResultSet resultSet = statement.executeQuery("SELECT COUNT(" + columnNameForRequest + ") AS countRecords FROM " + nameOfTable + ";");
+        if (resultSet.next()) {
+            countOfRecords = resultSet.getInt("countRecords");
+        }
+        return countOfRecords;
+    }
+
     void createIfNotExistsLocationTable(String url, String username, String password) throws SQLException {
 
         Connection connection = DriverManager.getConnection(url, username, password);
@@ -29,9 +48,9 @@ public class IssSqlTable {
         Statement statement = connection.createStatement();
         String sqlQuery = "SELECT * FROM Humans_data";
         ResultSet resultSet = statement.executeQuery(sqlQuery);
-        while ((resultSet.next())){
-            System.out.print("name: "+ resultSet.getString("name"));
-            System.out.println(" || craft: "+ resultSet.getString("craft"));
+        while ((resultSet.next())) {
+            System.out.print("name: " + resultSet.getString("name"));
+            System.out.println(" || craft: " + resultSet.getString("craft"));
         }
     }
 
@@ -59,9 +78,9 @@ public class IssSqlTable {
                 ")");
         statement.executeUpdate("DELETE FROM Humans_data");
 
-        for (int i = 0; i < translateIssRequestFromJson.name.size(); i++) {
-            String name = translateIssRequestFromJson.name.get(i);
-            String craft = translateIssRequestFromJson.craft.get(i);
+        for (int i = 0; i < translateIssRequestFromJson.nameHumans.size(); i++) {
+            String name = translateIssRequestFromJson.nameHumans.get(i);
+            String craft = translateIssRequestFromJson.craftHumans.get(i);
 
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Humans_data (name, craft) VALUES (?, ?)");
             preparedStatement.setString(1, name);

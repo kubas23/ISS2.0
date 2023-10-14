@@ -10,7 +10,7 @@ Hlavní funkce systému
 3 Stažená data by měla být uložena do databáze +
 4 Technologie
 5 Konzolová aplikace
-6 JDBC nebo Hibernate
+6 JDBC + nebo Hibernate
 7 Doménová logika rozdělená do vrstev, např. DAO, Service
 8 Nástroje pro testování jednotek
 

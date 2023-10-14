@@ -15,16 +15,16 @@ public class TranslateIssRequestFromJson {
 
     String messageHumans = null;
     int numbersHumans = 0;
-    List<String> name = new ArrayList<>();
-    List<String> craft = new ArrayList<>();
+    List<String> nameHumans = new ArrayList<>();
+    List<String> craftHumans = new ArrayList<>();
 
     void translateLocation() throws IOException {
 
-        EntityClassISSData issData = gson.fromJson(issOpenNotifyApi.whereIsNowIssRequest(), EntityClassISSData.class);
-        EntityClassISSData.IssPosition issPosition = issData.getIss_position();
+        EntityClassISSDataJson issData = gson.fromJson(issOpenNotifyApi.whereIsNowIssRequest(), EntityClassISSDataJson.class);
+        EntityClassISSDataJson.IssPosition issPosition = issData.getIss_position();
 
-        longitudeLocation = issPosition.getLongitude();
-        latitudeLocation = issPosition.getLatitude();
+        longitudeLocation = issPosition.getLongitudeWithSerializedName();
+        latitudeLocation = issPosition.getLatitudeWithSerializedName();
         messageLocation = issData.getMessage();
         long timestamp = issData.getTimestamp();
 
@@ -36,11 +36,11 @@ public class TranslateIssRequestFromJson {
 
         EntityClassHowManyHumans humansData = gson.fromJson(issOpenNotifyApi.howManyHumans(), EntityClassHowManyHumans.class);
         List<EntityClassHowManyHumans.HumanCraft> humanCrafts = humansData.getPeople();
-        name.clear();
-        craft.clear();
+        nameHumans.clear();
+        craftHumans.clear();
         for (EntityClassHowManyHumans.HumanCraft humanCraft : humanCrafts) {
-             name.add(humanCraft.getName()) ;
-             craft.add(humanCraft.getCraft());
+             nameHumans.add(humanCraft.getName()) ;
+             craftHumans.add(humanCraft.getCraft());
         }
         messageHumans = humansData.getMessage();
         numbersHumans = humansData.getNumber();
